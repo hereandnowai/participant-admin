@@ -1,11 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
-import { Chart, ChartConfiguration, ChartType, registerables } from 'chart.js';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ParticipantsService } from '../services/participants.service';
 import { Participant } from '../models/participant.model';
 
-// Register Chart.js components
-Chart.register(...registerables);
+// Chart.js components are registered when we dynamically import `chart.js/auto`.
 
 interface DashboardStats {
   totalParticipants: number;
@@ -41,9 +39,14 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   isLoading = false;
   errorMessage = '';
 
-  private avgSkillsChart?: Chart;
-  private skillDistributionChart?: Chart;
-  private skillsRadarChart?: Chart;
+  // Chart instances (constructed after dynamic import)
+  private avgSkillsChart: any;
+  private skillDistributionChart: any;
+  private skillsRadarChart: any;
+
+  // Chart.js constructor loaded dynamically
+  private ChartConstructor: any = null;
+  private chartJsLoaded = false;
 
   constructor(
     private participantsService: ParticipantsService,
@@ -66,10 +69,10 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     this.errorMessage = '';
 
     this.participantsService.list().subscribe({
-      next: (participants) => {
+      next: async (participants) => {
         this.participants = participants;
         this.computeStats();
-        this.createCharts();
+        await this.createCharts();
         this.isLoading = false;
       },
       error: (error) => {
@@ -123,19 +126,35 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * Create all dashboard charts
    */
-  private createCharts(): void {
+  /**
+   * Ensure Chart.js is loaded, then create charts.
+   */
+  private async createCharts(): Promise<void> {
     if (this.stats.totalParticipants === 0) return;
+
+    await this.loadChartJsIfNeeded();
 
     this.createAvgSkillsChart();
     this.createSkillDistributionChart();
     this.createSkillsRadarChart();
   }
 
+  /** Dynamically import Chart.js (auto) so it's only loaded when dashboard is opened */
+  private async loadChartJsIfNeeded(): Promise<void> {
+    if (this.chartJsLoaded) return;
+
+    // `chart.js/auto` registers required components automatically and
+    // exports the Chart constructor as default or as Chart.
+    const chartModule = await import('chart.js/auto');
+    this.ChartConstructor = (chartModule as any).default || (chartModule as any).Chart || chartModule;
+    this.chartJsLoaded = true;
+  }
+
   /**
    * Create average skills bar chart
    */
   private createAvgSkillsChart(): void {
-    const ctx = this.avgSkillsChartRef.nativeElement.getContext('2d');
+  const ctx = this.avgSkillsChartRef.nativeElement.getContext('2d');
     if (!ctx) return;
 
     // Destroy existing chart if it exists
@@ -143,8 +162,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       this.avgSkillsChart.destroy();
     }
 
-    const config: ChartConfiguration = {
-      type: 'bar' as ChartType,
+    const config: any = {
+      type: 'bar',
       data: {
         labels: ['Python', 'Angular', 'JavaScript', 'HTML', 'CSS', 'Java'],
         datasets: [{
@@ -196,14 +215,15 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     };
 
-    this.avgSkillsChart = new Chart(ctx, config);
+  // Use dynamically loaded Chart constructor
+  this.avgSkillsChart = new this.ChartConstructor(ctx, config);
   }
 
   /**
    * Create skill distribution pie chart (for Angular skills)
    */
   private createSkillDistributionChart(): void {
-    const ctx = this.skillDistributionChartRef.nativeElement.getContext('2d');
+  const ctx = this.skillDistributionChartRef.nativeElement.getContext('2d');
     if (!ctx) return;
 
     // Destroy existing chart if it exists
@@ -216,8 +236,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     const intermediate = this.participants.filter(p => (p.angular_skill || 0) > 3 && (p.angular_skill || 0) <= 6).length;
     const advanced = this.participants.filter(p => (p.angular_skill || 0) > 6).length;
 
-    const config: ChartConfiguration = {
-      type: 'doughnut' as ChartType,
+    const config: any = {
+      type: 'doughnut',
       data: {
         labels: ['Beginner (1-3)', 'Intermediate (4-6)', 'Advanced (7-10)'],
         datasets: [{
@@ -246,14 +266,14 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     };
 
-    this.skillDistributionChart = new Chart(ctx, config);
+  this.skillDistributionChart = new this.ChartConstructor(ctx, config);
   }
 
   /**
    * Create skills radar chart
    */
   private createSkillsRadarChart(): void {
-    const ctx = this.skillsRadarChartRef.nativeElement.getContext('2d');
+  const ctx = this.skillsRadarChartRef.nativeElement.getContext('2d');
     if (!ctx) return;
 
     // Destroy existing chart if it exists
@@ -261,8 +281,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       this.skillsRadarChart.destroy();
     }
 
-    const config: ChartConfiguration = {
-      type: 'radar' as ChartType,
+    const config: any = {
+      type: 'radar',
       data: {
         labels: ['Python', 'Angular', 'JavaScript', 'HTML', 'CSS', 'Java'],
         datasets: [{
@@ -304,7 +324,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     };
 
-    this.skillsRadarChart = new Chart(ctx, config);
+  this.skillsRadarChart = new this.ChartConstructor(ctx, config);
   }
 
   /**
