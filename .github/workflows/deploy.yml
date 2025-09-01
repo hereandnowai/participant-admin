@@ -1,0 +1,45 @@
+name: CI Build & FTP Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build --if-present
+      - name: Debug dist
+        run: ls -R dist || true
+      - name: Patch index.html base href for subfolder deployment
+        run: |
+          # set web base path to the subfolder where the app will be served
+          BASE="/apps/${{ github.event.repository.name }}/"
+          PROJECT="${{ github.event.repository.name }}"
+          INDEX="dist/${PROJECT}/index.html"
+          if [ -f "$INDEX" ]; then
+            echo "Patching $INDEX -> base href = $BASE"
+            sed -i "s|<base href=\"[^\"]*\">|<base href=\"$BASE\">|" "$INDEX"
+          else
+            echo "::warning::Index file not found at $INDEX"
+          fi
+      - name: Upload to FTP 
+        run: |
+          sudo apt-get -y install lftp
+          lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} -p 3000 ${{ secrets.FTP_HOST }} <<FTP_EOF
+          set ftp:ssl-allow no
+          mkdir -p /apps.hereandnowai.com/apps/${{ github.event.repository.name }}
+          mirror -R --delete --verbose ./dist/${{ github.event.repository.name }}/ /apps.hereandnowai.com/apps/${{ github.event.repository.name }}/
+          bye
+          FTP_EOF
