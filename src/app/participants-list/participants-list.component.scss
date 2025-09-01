@@ -1,0 +1,121 @@
+/* Kids Gaming Fun themed styles for participants list */
+.participants-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.header-section h1 {
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+  color: #4CAF50;
+  margin: 0;
+  font-size: 2rem;
+}
+
+.search-section {
+  margin-bottom: 24px;
+}
+
+.search-field {
+  width: 100%;
+  max-width: 400px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.error-container {
+  margin-bottom: 24px;
+}
+
+.error-card {
+  background-color: #ffebee;
+  border-left: 4px solid #f44336;
+}
+
+.table-container {
+  margin-bottom: 24px;
+}
+
+.participants-table {
+  width: 100%;
+}
+
+.participants-table th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  color: #4CAF50;
+}
+
+.participants-table td {
+  padding: 12px 8px;
+}
+
+.no-data {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.no-data p {
+  font-size: 1.1em;
+  margin-bottom: 16px;
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+}
+
+/* Action buttons */
+.mat-mdc-icon-button {
+  margin: 0 4px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .header-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .participants-table {
+    font-size: 0.9em;
+  }
+  
+  .participants-table td,
+  .participants-table th {
+    padding: 8px 4px;
+  }
+}
+
+/* Material theming */
+.mat-mdc-raised-button.mat-primary {
+  background-color: #4CAF50;
+  color: white;
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+  font-weight: bold;
+}
+
+.mat-mdc-raised-button.mat-primary:hover {
+  background-color: #45a049;
+}
+
+/* Success and error snackbar styles */
+.success-snackbar {
+  background-color: #4CAF50 !important;
+  color: white !important;
+}
+
+.error-snackbar {
+  background-color: #f44336 !important;
+  color: white !important;
+}

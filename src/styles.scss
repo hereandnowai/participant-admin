@@ -1,0 +1,68 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Kids Gaming Fun Global Theme */
+:root {
+  --primary-color: #4CAF50;
+  --secondary-color: #FFC107;
+  --primary-font: 'Comic Sans MS', 'Comic Sans', cursive;
+}
+
+/* Global font family */
+html, body {
+  font-family: var(--primary-font);
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: #f5f5f5;
+}
+
+/* Override Angular Material theme colors */
+.mat-mdc-raised-button.mat-primary {
+  --mdc-protected-button-container-color: var(--primary-color);
+  --mdc-protected-button-label-text-color: white;
+}
+
+.mat-mdc-raised-button.mat-primary:hover {
+  --mdc-protected-button-container-color: #45a049;
+}
+
+.mat-mdc-form-field.mat-focused .mat-mdc-form-field-outline-thick {
+  border-color: var(--primary-color) !important;
+}
+
+.mat-mdc-form-field.mat-focused .mdc-floating-label {
+  color: var(--primary-color) !important;
+}
+
+/* Global button styles */
+button {
+  font-family: var(--primary-font) !important;
+}
+
+/* Snackbar global styles */
+.success-snackbar {
+  --mdc-snackbar-container-color: var(--primary-color) !important;
+  --mdc-snackbar-supporting-text-color: white !important;
+}
+
+.error-snackbar {
+  --mdc-snackbar-container-color: #f44336 !important;
+  --mdc-snackbar-supporting-text-color: white !important;
+}
+
+/* Table styling */
+.mat-mdc-table {
+  font-family: var(--primary-font);
+}
+
+/* Material icon styling */
+.mat-icon {
+  font-family: 'Material Icons' !important;
+}
+
+/* Ensure full height layout */
+app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
