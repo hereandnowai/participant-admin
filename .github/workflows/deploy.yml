@@ -40,6 +40,6 @@ jobs:
           lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} -p 3000 ${{ secrets.FTP_HOST }} <<FTP_EOF
           set ftp:ssl-allow no
           mkdir -p /apps.hereandnowai.com/apps/${{ github.event.repository.name }}
-          mirror -R --delete --verbose ./dist/${{ github.event.repository.name }}/ /apps.hereandnowai.com/apps/${{ github.event.repository.name }}/
+          mirror -R --delete --verbose ./dist/ /apps.hereandnowai.com/apps/${{ github.event.repository.name }}/
           bye
           FTP_EOF
