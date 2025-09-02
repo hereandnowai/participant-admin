@@ -1,0 +1,256 @@
+<div class="dashboard-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="title-section">
+      <h1>Dashboard</h1>
+      <p class="subtitle">Participant statistics and skill analytics</p>
+    </div>
+    
+    <div class="actions-section">
+      <button 
+        mat-icon-button 
+        (click)="refresh()"
+        matTooltip="Refresh data"
+        [disabled]="loading()">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="loading()" class="loading-section">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Loading dashboard data...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error()" class="error-section">
+    <mat-icon color="warn">error</mat-icon>
+    <p>{{ error() }}</p>
+    <button mat-button color="primary" (click)="refresh()">
+      <mat-icon>refresh</mat-icon>
+      Try Again
+    </button>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="!loading() && !error()" class="dashboard-content">
+    
+    <!-- Empty State -->
+    <div *ngIf="!hasData()" class="empty-state">
+      <mat-icon>assessment</mat-icon>
+      <h3>No Data Available</h3>
+      <p>Add some participants to see analytics and statistics.</p>
+      <button mat-raised-button color="primary" routerLink="/participants/new">
+        <mat-icon>add</mat-icon>
+        Add First Participant
+      </button>
+    </div>
+
+    <!-- KPI Cards -->
+    <div *ngIf="hasData()" class="kpi-section">
+      <div class="kpi-grid">
+        <!-- Total Participants -->
+        <mat-card class="kpi-card total-card">
+          <mat-card-content>
+            <div class="kpi-content">
+              <div class="kpi-icon">
+                <mat-icon>people</mat-icon>
+              </div>
+              <div class="kpi-info">
+                <div class="kpi-value">{{ stats().totalCount }}</div>
+                <div class="kpi-label">Total Participants</div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Average Python Skill -->
+        <mat-card class="kpi-card python-card">
+          <mat-card-content>
+            <div class="kpi-content">
+              <div class="kpi-icon">
+                <mat-icon>code</mat-icon>
+              </div>
+              <div class="kpi-info">
+                <div class="kpi-value">{{ stats().averageSkills.python || 'N/A' }}</div>
+                <div class="kpi-label">Avg Python Skill</div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Average Angular Skill -->
+        <mat-card class="kpi-card angular-card">
+          <mat-card-content>
+            <div class="kpi-content">
+              <div class="kpi-icon">
+                <mat-icon>web</mat-icon>
+              </div>
+              <div class="kpi-info">
+                <div class="kpi-value">{{ stats().averageSkills.angular || 'N/A' }}</div>
+                <div class="kpi-label">Avg Angular Skill</div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Average JavaScript Skill -->
+        <mat-card class="kpi-card javascript-card">
+          <mat-card-content>
+            <div class="kpi-content">
+              <div class="kpi-icon">
+                <mat-icon>javascript</mat-icon>
+              </div>
+              <div class="kpi-info">
+                <div class="kpi-value">{{ stats().averageSkills.javascript || 'N/A' }}</div>
+                <div class="kpi-label">Avg JavaScript Skill</div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div *ngIf="hasData()" class="charts-section">
+      
+      <!-- Skills Overview Chart -->
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>Average Skills Overview</mat-card-title>
+          <mat-card-subtitle>Average skill levels across all technologies</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="skills-bar-chart">
+            <div class="skill-bar" *ngFor="let skill of skillOptions">
+              <div class="skill-info">
+                <span class="skill-name">{{ skill.label }}</span>
+                <span class="skill-value">{{ getSkillValue(skill.value) }}</span>
+              </div>
+              <div class="skill-progress">
+                <div class="progress-bar">
+                  <div 
+                    class="progress-fill" 
+                    [style.width.%]="getSkillValue(skill.value) * 10"
+                    [attr.data-skill]="skill.value">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Skill Distribution Chart -->
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>Skill Level Distribution</mat-card-title>
+          <mat-card-subtitle>Distribution of skill levels for selected technology</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <!-- Skill Selector -->
+          <div class="skill-selector">
+            <mat-form-field appearance="outline">
+              <mat-label>Select Skill</mat-label>
+              <mat-select 
+                [value]="selectedSkillForPie()" 
+                (selectionChange)="onSkillSelectionChange($event.value)">
+                <mat-option *ngFor="let skill of skillOptions" [value]="skill.value">
+                  {{ skill.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- Distribution Display -->
+          <div class="distribution-chart">
+            <div class="distribution-item low">
+              <div class="distribution-color low-color"></div>
+              <div class="distribution-info">
+                <span class="distribution-label">Low (1-3)</span>
+                <span class="distribution-value">
+                  {{ stats().skillDistribution[selectedSkillForPie()].low || 0 }}
+                  ({{ getSkillPercentage(
+                    stats().skillDistribution[selectedSkillForPie()].low || 0,
+                    (stats().skillDistribution[selectedSkillForPie()].low || 0) +
+                    (stats().skillDistribution[selectedSkillForPie()].medium || 0) +
+                    (stats().skillDistribution[selectedSkillForPie()].high || 0)
+                  ) }})
+                </span>
+              </div>
+            </div>
+
+            <div class="distribution-item medium">
+              <div class="distribution-color medium-color"></div>
+              <div class="distribution-info">
+                <span class="distribution-label">Medium (4-6)</span>
+                <span class="distribution-value">
+                  {{ stats().skillDistribution[selectedSkillForPie()].medium || 0 }}
+                  ({{ getSkillPercentage(
+                    stats().skillDistribution[selectedSkillForPie()].medium || 0,
+                    (stats().skillDistribution[selectedSkillForPie()].low || 0) +
+                    (stats().skillDistribution[selectedSkillForPie()].medium || 0) +
+                    (stats().skillDistribution[selectedSkillForPie()].high || 0)
+                  ) }})
+                </span>
+              </div>
+            </div>
+
+            <div class="distribution-item high">
+              <div class="distribution-color high-color"></div>
+              <div class="distribution-info">
+                <span class="distribution-label">High (7-10)</span>
+                <span class="distribution-value">
+                  {{ stats().skillDistribution[selectedSkillForPie()].high || 0 }}
+                  ({{ getSkillPercentage(
+                    stats().skillDistribution[selectedSkillForPie()].high || 0,
+                    (stats().skillDistribution[selectedSkillForPie()].low || 0) +
+                    (stats().skillDistribution[selectedSkillForPie()].medium || 0) +
+                    (stats().skillDistribution[selectedSkillForPie()].high || 0)
+                  ) }})
+                </span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Additional Statistics -->
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>Skill Summary</mat-card-title>
+          <mat-card-subtitle>Comprehensive overview of all skills</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="skills-summary">
+            <div class="summary-grid">
+              <div class="summary-item" *ngFor="let skill of skillOptions">
+                <div class="summary-header">
+                  <mat-icon>{{ getSkillIcon(skill.value) }}</mat-icon>
+                  <span class="summary-title">{{ skill.label }}</span>
+                </div>
+                <div class="summary-stats">
+                  <div class="stat">
+                    <span class="stat-label">Average:</span>
+                    <span class="stat-value">{{ getSkillValue(skill.value) }}/10</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-label">Total with skill:</span>
+                    <span class="stat-value">
+                      {{ 
+                        (stats().skillDistribution[skill.value].low || 0) +
+                        (stats().skillDistribution[skill.value].medium || 0) +
+                        (stats().skillDistribution[skill.value].high || 0)
+                      }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

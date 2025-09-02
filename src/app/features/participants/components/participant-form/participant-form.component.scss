@@ -1,0 +1,272 @@
+.form-container {
+  padding: 24px;
+  max-width: 800px;
+  margin: 0 auto;
+
+  .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    .title-section {
+      h1 {
+        margin: 0 0 8px 0;
+        font-size: 2rem;
+        font-weight: 400;
+        color: #333;
+      }
+
+      .subtitle {
+        margin: 0;
+        color: #666;
+        font-size: 0.9rem;
+        max-width: 500px;
+        line-height: 1.4;
+      }
+    }
+
+    .actions-section {
+      display: flex;
+      align-items: center;
+
+      button {
+        mat-icon {
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+
+  .loading-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 24px;
+    gap: 16px;
+
+    p {
+      margin: 0;
+      color: #666;
+    }
+  }
+
+  .participant-form {
+    .form-card {
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+      mat-card-header {
+        margin-bottom: 16px;
+
+        mat-card-title {
+          font-size: 1.25rem;
+          color: #333;
+        }
+
+        mat-card-subtitle {
+          color: #666;
+          margin-top: 4px;
+        }
+      }
+
+      mat-card-content {
+        .form-row {
+          display: flex;
+          gap: 16px;
+          margin-bottom: 16px;
+          flex-wrap: wrap;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+
+          .full-width {
+            flex: 1;
+            min-width: 100%;
+          }
+
+          .half-width {
+            flex: 1;
+            min-width: 280px;
+          }
+
+          mat-form-field {
+            mat-icon[matSuffix] {
+              color: #666;
+            }
+
+            &.ng-invalid.ng-touched {
+              .mat-mdc-form-field-outline {
+                color: #f44336;
+              }
+            }
+          }
+        }
+
+        .skills-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 16px;
+
+          mat-form-field {
+            mat-icon[matSuffix] {
+              color: #666;
+            }
+          }
+        }
+      }
+    }
+
+    .form-actions {
+      margin-top: 32px;
+      padding: 24px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+
+      .action-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        flex-wrap: wrap;
+
+        button {
+          min-width: 120px;
+
+          mat-icon {
+            margin-right: 8px;
+          }
+
+          mat-spinner {
+            margin-right: 8px;
+          }
+
+          &[color="primary"] {
+            min-width: 160px;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .form-container {
+    padding: 16px;
+
+    .header-section {
+      flex-direction: column;
+      align-items: stretch;
+
+      .actions-section {
+        justify-content: flex-start;
+      }
+    }
+
+    .participant-form {
+      .form-card {
+        mat-card-content {
+          .form-row {
+            flex-direction: column;
+            gap: 8px;
+
+            .half-width {
+              min-width: unset;
+            }
+          }
+
+          .skills-grid {
+            grid-template-columns: 1fr;
+            gap: 8px;
+          }
+        }
+      }
+
+      .form-actions {
+        padding: 16px;
+
+        .action-buttons {
+          flex-direction: column;
+          align-items: stretch;
+
+          button {
+            min-width: unset;
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .form-container {
+    padding: 12px;
+
+    .header-section {
+      .title-section {
+        h1 {
+          font-size: 1.5rem;
+        }
+      }
+    }
+
+    .participant-form {
+      .form-card {
+        margin-bottom: 16px;
+
+        mat-card-header {
+          margin-bottom: 12px;
+
+          mat-card-title {
+            font-size: 1.1rem;
+          }
+        }
+      }
+
+      .form-actions {
+        margin-top: 24px;
+        padding: 12px;
+      }
+    }
+  }
+}
+
+// Custom styles for better UX
+.mat-mdc-form-field {
+  .mat-mdc-form-field-outline {
+    transition: color 0.2s ease;
+  }
+
+  &:hover:not(.mat-focused):not(.ng-invalid) {
+    .mat-mdc-form-field-outline {
+      color: rgba(0, 0, 0, 0.6);
+    }
+  }
+}
+
+.mat-mdc-card {
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Success states
+.form-success {
+  .mat-mdc-form-field-outline {
+    color: #4caf50 !important;
+  }
+}
+
+// Focus improvements
+.mat-mdc-form-field.mat-focused {
+  .mat-mdc-form-field-outline {
+    color: #1976d2;
+  }
+}

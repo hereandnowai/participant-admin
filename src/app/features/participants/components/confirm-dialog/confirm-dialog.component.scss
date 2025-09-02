@@ -1,0 +1,67 @@
+.confirm-dialog {
+  .dialog-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+
+    .dialog-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 500;
+    }
+  }
+
+  .dialog-content {
+    margin-bottom: 24px;
+
+    p {
+      margin: 0;
+      line-height: 1.5;
+      color: #666;
+    }
+  }
+
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 0;
+
+    .confirm-button {
+      min-width: 100px;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 480px) {
+  .confirm-dialog {
+    .dialog-header {
+      .dialog-icon {
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+      }
+
+      h2 {
+        font-size: 1.1rem;
+      }
+    }
+
+    .dialog-actions {
+      flex-direction: column-reverse;
+      align-items: stretch;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+}

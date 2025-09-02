@@ -1,0 +1,216 @@
+<div class="participants-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="title-section">
+      <h1>Participants</h1>
+      <p class="subtitle">Manage training participants and their skills</p>
+    </div>
+    
+    <div class="actions-section">
+      <button 
+        mat-raised-button 
+        color="primary" 
+        (click)="addParticipant()"
+        class="add-button">
+        <mat-icon>person_add</mat-icon>
+        Add Participant
+      </button>
+      
+      <button 
+        mat-icon-button 
+        (click)="refresh()"
+        matTooltip="Refresh list"
+        [disabled]="loading()">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Search Section -->
+  <div class="search-section">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search participants</mat-label>
+      <input 
+        matInput 
+        placeholder="Search by name, email, or GitHub ID"
+        [value]="searchQuery()"
+  (input)="onSearchChange($event.target.value || '')"
+        #searchInput>
+      <mat-icon matSuffix>search</mat-icon>
+      <button 
+        matSuffix 
+        mat-icon-button 
+        *ngIf="searchQuery()"
+        (click)="clearSearch(); searchInput.value = ''"
+        matTooltip="Clear search">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="loading()" class="loading-section">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Loading participants...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error()" class="error-section">
+    <mat-icon color="warn">error</mat-icon>
+    <p>{{ error() }}</p>
+    <button mat-button color="primary" (click)="refresh()">
+      <mat-icon>refresh</mat-icon>
+      Try Again
+    </button>
+  </div>
+
+  <!-- Results Summary -->
+  <div *ngIf="!loading() && !error()" class="results-summary">
+    <p>
+      Showing {{ filteredParticipants().length }} of {{ participants().length }} participants
+      <span *ngIf="searchQuery()" class="search-info">
+        for "{{ searchQuery() }}"
+      </span>
+    </p>
+  </div>
+
+  <!-- Table Section -->
+  <div *ngIf="!loading() && !error()" class="table-container">
+    <table 
+      mat-table 
+      [dataSource]="dataSource" 
+      class="participants-table"
+      matSort 
+      (matSortChange)="announceSortChange($event)">
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+        <td mat-cell *matCellDef="let participant">
+          <div class="name-cell">
+            <strong>{{ participant.name }}</strong>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Email Column -->
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>Email</th>
+        <td mat-cell *matCellDef="let participant">
+          <a [href]="'mailto:' + participant.email" class="email-link">
+            {{ participant.email }}
+          </a>
+        </td>
+      </ng-container>
+
+      <!-- WhatsApp Column -->
+      <ng-container matColumnDef="whatsapp">
+        <th mat-header-cell *matHeaderCellDef>WhatsApp</th>
+        <td mat-cell *matCellDef="let participant">
+          <span class="whatsapp-number">{{ participant.whatsapp }}</span>
+        </td>
+      </ng-container>
+
+      <!-- LinkedIn Column -->
+      <ng-container matColumnDef="linkedin">
+        <th mat-header-cell *matHeaderCellDef>LinkedIn</th>
+        <td mat-cell *matCellDef="let participant">
+          <a 
+            *ngIf="participant.linkedin" 
+            [href]="participant.linkedin" 
+            target="_blank" 
+            class="linkedin-link"
+            matTooltip="Open LinkedIn profile">
+            LinkedIn
+          </a>
+          <span *ngIf="!participant.linkedin" class="no-data">-</span>
+        </td>
+      </ng-container>
+
+      <!-- GitHub Column -->
+      <ng-container matColumnDef="github_id">
+        <th mat-header-cell *matHeaderCellDef>GitHub</th>
+        <td mat-cell *matCellDef="let participant">
+          <span class="github-id">{{ participant.github_id || '-' }}</span>
+        </td>
+      </ng-container>
+
+      <!-- Created Date Column -->
+      <ng-container matColumnDef="created_at">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Created</th>
+        <td mat-cell *matCellDef="let participant">
+          <span class="date-cell">{{ formatDate(participant.created_at) }}</span>
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let participant">
+          <div class="actions-cell">
+            <button 
+              mat-icon-button 
+              color="primary"
+              (click)="viewParticipant(participant)"
+              matTooltip="View details">
+              <mat-icon>account_circle</mat-icon>
+            </button>
+            
+            <button 
+              mat-icon-button 
+              color="accent"
+              (click)="editParticipant(participant)"
+              matTooltip="Edit participant">
+              <mat-icon>edit_note</mat-icon>
+            </button>
+            
+            <button 
+              mat-icon-button 
+              color="warn"
+              (click)="deleteParticipant(participant)"
+              matTooltip="Delete participant">
+              <mat-icon>person_remove</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr 
+        mat-row 
+        *matRowDef="let row; columns: displayedColumns;"
+        class="participant-row"
+        (click)="viewParticipant(row)">
+      </tr>
+    </table>
+
+    <!-- No Results Message -->
+    <div *ngIf="filteredParticipants().length === 0" class="no-results">
+      <mat-icon>search_off</mat-icon>
+      <h3>No participants found</h3>
+      <p *ngIf="searchQuery()">
+        Try adjusting your search terms or 
+        <button mat-button color="primary" (click)="clearSearch()">clear the search</button>
+      </p>
+      <p *ngIf="!searchQuery()">
+        Get started by adding your first participant.
+      </p>
+      <button 
+        mat-raised-button 
+        color="primary" 
+        (click)="addParticipant()"
+        class="add-first-button">
+        <mat-icon>add</mat-icon>
+        Add First Participant
+      </button>
+    </div>
+  </div>
+
+  <!-- Table Pagination -->
+  <mat-paginator 
+    *ngIf="!loading() && !error() && filteredParticipants().length > 0"
+    [pageSizeOptions]="[5, 10, 20, 50]"
+    [pageSize]="10"
+    showFirstLastButtons>
+  </mat-paginator>
+</div>

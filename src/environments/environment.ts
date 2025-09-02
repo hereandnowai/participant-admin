@@ -2,5 +2,32 @@ export const environment = {
   production: false,
   apiBaseUrl: 'https://api.hereandnowai.com/public/api',
   apiKeyHeaderName: 'X-API-KEY',
-  apiKeyValue: 'K00soZRLnUorzLFcR73TmyyvmSJ0Lco5'
+  apiKeyValue: 'K00soZRLnUorzLFcR73TmyyvmSJ0Lco5', // Configure this with your actual API key
+  brand: {
+    organizationName: 'HERE AND NOW AI',
+    website: 'https://hereandnowai.com',
+    email: 'info@hereandnowai.com',
+    mobile: '+91 996 296 1000',
+    slogan: 'designed with passion for innovation',
+    colors: { 
+      primary: '#FFDF00', 
+      secondary: '#004040' 
+    },
+    logo: {
+      title: 'https://raw.githubusercontent.com/hereandnowai/images/refs/heads/main/logos/logo-of-here-and-now-ai.png',
+      favicon: 'https://raw.githubusercontent.com/hereandnowai/images/refs/heads/main/logos/favicon-logo-with-name.png'
+    },
+    chatbot: {
+      avatar: 'https://raw.githubusercontent.com/hereandnowai/images/refs/heads/main/logos/caramel.jpeg',
+      face: 'https://raw.githubusercontent.com/hereandnowai/images/refs/heads/main/logos/caramel-face.jpeg'
+    },
+    socialMedia: {
+      blog: 'https://hereandnowai.com/blog',
+      linkedin: 'https://www.linkedin.com/company/hereandnowai/',
+      instagram: 'https://instagram.com/hereandnow_ai',
+      github: 'https://github.com/hereandnowai',
+      x: 'https://x.com/hereandnow_ai',
+      youtube: 'https://youtube.com/@hereandnow_ai'
+    }
+  }
 };

@@ -1,0 +1,67 @@
+<div class="app-container">
+  <!-- Top Navigation Bar -->
+  <mat-toolbar color="primary" class="nav-toolbar app-toolbar">
+    <div class="toolbar-content">
+      <!-- Navigation Menu -->
+      <nav class="nav-menu">
+        <button 
+          mat-button 
+          [class.active]="isRouteActive('/participants')"
+          [routerLink]="['/participants']"
+          aria-label="Go to Participants"
+          class="nav-button">
+          Participants
+        </button>
+        
+        <button 
+          mat-button 
+          [class.active]="isRouteActive('/dashboard')"
+          [routerLink]="['/dashboard']"
+          aria-label="Go to Dashboard"
+          class="nav-button">
+          Dashboard
+        </button>
+      </nav>
+
+      <!-- Brand Section -->
+      <div class="brand-section">
+        <div class="brand-identity">
+          <img [src]="brand.logo.favicon" alt="HERE AND NOW AI Logo" class="brand-logo">
+          <div class="brand-text-group">
+            <h3 class="company-name">{{ brand.organizationName }}</h3>
+            <h4 class="app-title">{{ title() }}</h4>
+            <p class="brand-slogan">{{ brand.slogan }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- end toolbar-content -->
+    </div>
+  </mat-toolbar>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <!-- Contact Info -->
+      <div class="footer-contact-section">
+        <div class="contact-item">
+          <a [href]="brand.website" target="_blank" class="footer-link">
+            {{ brand.website }}
+          </a>
+        </div>
+        <div class="contact-item">
+          <span class="footer-contact">{{ brand.email }}</span>
+        </div>
+        <div class="contact-item">
+          <span class="footer-contact">{{ brand.mobile }}</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+

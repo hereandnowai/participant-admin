@@ -1,0 +1,287 @@
+.participants-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    .title-section {
+      h1 {
+        margin: 0 0 8px 0;
+        font-size: 2rem;
+        font-weight: 400;
+        color: #333;
+      }
+
+      .subtitle {
+        margin: 0;
+        color: #666;
+        font-size: 0.9rem;
+      }
+    }
+
+    .actions-section {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .add-button {
+        mat-icon {
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+
+  .search-section {
+    margin-bottom: 24px;
+
+    .search-field {
+      width: 100%;
+      max-width: 400px;
+    }
+  }
+
+  .loading-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    gap: 16px;
+
+    p {
+      margin: 0;
+      color: #666;
+    }
+  }
+
+  .error-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    gap: 16px;
+    text-align: center;
+
+    mat-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+    }
+
+    p {
+      margin: 0;
+      color: #666;
+      max-width: 400px;
+    }
+  }
+
+  .results-summary {
+    margin-bottom: 16px;
+    color: #666;
+    font-size: 0.9rem;
+
+    .search-info {
+      font-weight: 500;
+      color: #333;
+    }
+  }
+
+  .table-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+
+    .participants-table {
+      width: 100%;
+
+      .mat-mdc-header-cell {
+        font-weight: 600;
+        color: #333;
+        background-color: #f8f9fa;
+      }
+
+      .mat-mdc-cell {
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .participant-row {
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background-color: #f5f5f5;
+        }
+      }
+
+      .name-cell {
+        strong {
+          color: #333;
+        }
+      }
+
+      .email-link {
+        color: #1976d2;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      .whatsapp-number {
+        font-family: monospace;
+        background-color: #f0f0f0;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.9rem;
+      }
+
+      .linkedin-link {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: #0077b5;
+        text-decoration: none;
+        font-size: 0.9rem;
+
+        &:hover {
+          text-decoration: underline;
+        }
+
+        mat-icon {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+        }
+      }
+
+      .github-id {
+        font-family: monospace;
+        font-size: 0.9rem;
+      }
+
+      .date-cell {
+        font-size: 0.9rem;
+        color: #666;
+      }
+
+      .no-data {
+        color: #999;
+        font-style: italic;
+      }
+
+      .actions-cell {
+        display: flex;
+        gap: 4px;
+
+        button {
+          &:hover {
+            background-color: rgba(0, 0, 0, 0.04);
+          }
+        }
+      }
+    }
+
+    .no-results {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 64px 24px;
+      text-align: center;
+
+      mat-icon {
+        font-size: 64px;
+        width: 64px;
+        height: 64px;
+        color: #ccc;
+        margin-bottom: 16px;
+      }
+
+      h3 {
+        margin: 0 0 16px 0;
+        color: #666;
+        font-weight: 400;
+      }
+
+      p {
+        margin: 0 0 24px 0;
+        color: #999;
+        max-width: 400px;
+        line-height: 1.5;
+      }
+
+      .add-first-button {
+        mat-icon {
+          margin-right: 8px;
+          font-size: 20px;
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .participants-container {
+    padding: 16px;
+
+    .header-section {
+      flex-direction: column;
+      align-items: stretch;
+
+      .actions-section {
+        justify-content: flex-start;
+      }
+    }
+
+    .table-container {
+      .participants-table {
+        .mat-mdc-cell,
+        .mat-mdc-header-cell {
+          padding: 8px 4px;
+          font-size: 0.8rem;
+        }
+
+        .actions-cell {
+          flex-direction: column;
+          gap: 2px;
+
+          button {
+            min-width: 32px;
+            width: 32px;
+            height: 32px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .participants-container {
+    .table-container {
+      .participants-table {
+        .linkedin-link {
+          mat-icon {
+            font-size: 14px;
+            width: 14px;
+            height: 14px;
+          }
+        }
+      }
+    }
+  }
+}
